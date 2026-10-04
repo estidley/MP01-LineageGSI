@@ -4,9 +4,10 @@ Upstream: https://github.com/MP01Experiments/MP01-LineageGSI
 Fork: https://github.com/estidley/MP01-LineageGSI
 Development branch: `codex/mp01-bringup`
 
-The first build targets the upstream Android 15 / LineageOS 22.2 vanilla
+The first build targets the upstream Android 15 / LineageOS 22.2 Google-enabled
 configuration, including the MP01 display service, hardware keyboard maps,
-FinQwerty, and the upstream inkOS APK. Google Play services are not included.
+FinQwerty, and the upstream inkOS APK. Google Play services are included at the
+user's request. `MP01_VARIANT=vanilla` selects a Google-free build instead.
 Establish hardware compatibility before replacing more system components.
 
 ## Workstation
@@ -27,13 +28,20 @@ wsl -d Ubuntu -u root -- mkdir -p /mnt/mp01-build
 wsl -d Ubuntu -u root -- mount -o loop,noatime /mnt/d/MP01-Builds/android-build.ext4 /mnt/mp01-build
 ```
 
+Run the mount command and build within the same WSL invocation if Ubuntu exits
+between commands; mounts are lost when WSL stops. For example:
+
+```powershell
+wsl -d Ubuntu -u root -- bash -lc 'mountpoint -q /mnt/mp01-build || mount -o loop,noatime /mnt/d/MP01-Builds/android-build.ext4 /mnt/mp01-build; runuser -u estid -- bash /home/estid/mp01/MP01-LineageGSI/scripts/build-local.sh'
+```
+
 Run `bash scripts/build-local.sh sync` to download source, then
 `bash scripts/build-local.sh build` to patch and compile, or omit the argument
 to run both. `MP01_JOBS` defaults to 8 for the current WSL memory limit.
 Compilation and downloads may take hours.
 
 The local script stops at patch conflicts, records a revision-pinned Android
-manifest after sync, verifies the pinned FinQwerty APK, and writes an image
+manifest after sync, verifies the pinned FinQwerty and F-Droid APKs, and writes an image
 checksum. It does not publish releases, push commits, or operate on the phone.
 The upstream `build.sh` is a maintainer publishing workflow; use the local script.
 
