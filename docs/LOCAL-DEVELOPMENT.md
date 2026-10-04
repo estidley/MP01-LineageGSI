@@ -15,8 +15,10 @@ Establish hardware compatibility before replacing more system components.
 Windows checkout: `C:\Users\Estid\OneDrive\Documents\ChatGPT\Android\MP01-LineageGSI`
 
 Linux support checkout: `/home/estid/mp01/MP01-LineageGSI` in WSL Ubuntu.
-Android source and output: `/mnt/mp01-build`.
-Backing filesystem: `D:\MP01-Builds\android-build.ext4`, a sparse 600 GiB ext4
+Android source: `/mnt/mp01-source/source`, linked at `/mnt/mp01-build/source`.
+Source filesystem: `F:\MP01-Builds\android-source.ext4`, a sparse 300 GiB image
+on the SATA SSD. Build output, cache, logs, and images: `/mnt/mp01-build`.
+Output filesystem: `D:\MP01-Builds\android-build.ext4`, a sparse 600 GiB ext4
 image. Its maximum size is reserved logically; actual usage grows with the build.
 It must be mounted before starting the build. Never compile Android in OneDrive
 or directly on a Windows filesystem.
@@ -26,13 +28,15 @@ To remount after a WSL restart, from PowerShell:
 ```powershell
 wsl -d Ubuntu -u root -- mkdir -p /mnt/mp01-build
 wsl -d Ubuntu -u root -- mount -o loop,noatime /mnt/d/MP01-Builds/android-build.ext4 /mnt/mp01-build
+wsl -d Ubuntu -u root -- mkdir -p /mnt/mp01-source
+wsl -d Ubuntu -u root -- mount -o loop,noatime /mnt/f/MP01-Builds/android-source.ext4 /mnt/mp01-source
 ```
 
 Run the mount command and build within the same WSL invocation if Ubuntu exits
 between commands; mounts are lost when WSL stops. For example:
 
 ```powershell
-wsl -d Ubuntu -u root -- bash -lc 'mountpoint -q /mnt/mp01-build || mount -o loop,noatime /mnt/d/MP01-Builds/android-build.ext4 /mnt/mp01-build; runuser -u estid -- bash /home/estid/mp01/MP01-LineageGSI/scripts/build-local.sh'
+wsl -d Ubuntu -u root -- bash -lc 'set -e; mkdir -p /mnt/mp01-build /mnt/mp01-source; mountpoint -q /mnt/mp01-build || mount -o loop,noatime /mnt/d/MP01-Builds/android-build.ext4 /mnt/mp01-build; mountpoint -q /mnt/mp01-source || mount -o loop,noatime /mnt/f/MP01-Builds/android-source.ext4 /mnt/mp01-source; runuser -u estid -- bash /home/estid/mp01/MP01-LineageGSI/scripts/build-local.sh'
 ```
 
 Run `bash scripts/build-local.sh sync` to download source, then

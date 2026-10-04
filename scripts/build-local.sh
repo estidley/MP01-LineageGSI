@@ -30,6 +30,7 @@ trap 'state "FAILED line $LINENO (see $log_file)"' ERR
 export USE_CCACHE=1 CCACHE_EXEC=/usr/bin/ccache
 export CCACHE_DIR="$build_root/cache"
 export TMPDIR="$build_root/tmp"
+export OUT_DIR="$build_root/out"
 mkdir -p "$TMPDIR"
 ccache -M 30G
 cd "$build_root/source"
@@ -105,7 +106,7 @@ source build/envsetup.sh
 lunch "$product-bp1a-userdebug"
 make systemimage -j"$jobs"
 set -u
-image=out/target/product/tdgsi_arm64_ab/system.img
+image="$OUT_DIR/target/product/tdgsi_arm64_ab/system.img"
 [[ -s $image ]] || { echo 'No system image was produced.' >&2; exit 1; }
 image_name="MP01-estidley-$variant-$(date -u +%Y%m%dT%H%M%SZ)-dev.img"
 cp "$image" "$build_root/images/$image_name"
