@@ -1,0 +1,22 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: estidley <36413107+estidley@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 19:00:00 -0500
+Subject: [PATCH] Require ADB authentication in the MP01 development image
+
+Keep the standard device authorization prompt in the initial property set,
+before the runtime Treble compatibility script runs.
+
+diff --git a/base.mk b/base.mk
+--- a/base.mk
++++ b/base.mk
+@@ -33,7 +33,7 @@ PRODUCT_SYSTEM_DEFAULT_PROPERTIES += \
+     ro.build.version.all_codenames=$(PLATFORM_VERSION_ALL_CODENAMES) \
+     ro.build.version.release=$(PLATFORM_VERSION) \
+     ro.build.version.security_patch=$(PLATFORM_SECURITY_PATCH) \
+-    ro.adb.secure=0 \
++    ro.adb.secure=1 \
+     ro.logd.auditd=true \
+     ro.logd.kernel=true \
+ 
+-- 
+2.43.0
