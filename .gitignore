@@ -1,2 +1,5 @@
 .tar.gz
 .img
+.local-device/
+*.log
+*.img.sha256
