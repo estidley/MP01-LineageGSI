@@ -52,8 +52,8 @@ index 7be8b20a0a..d7a6de957a 100644
 +
 +    local_supported_commands_ = local_commands;
  
-   }
- 
+     if (auto disabledCommands = os::GetSystemProperty(kPropertyDisabledCommands)) {
+       for (const auto& command : android::base::Split(*disabledCommands, ",")) {
 @@ -370,7 +389,25 @@ struct Controller::impl {
      ErrorCode status = complete_view.GetStatus();
      log::assert_that(status == ErrorCode::SUCCESS, "Status {}", ErrorCodeText(status));
