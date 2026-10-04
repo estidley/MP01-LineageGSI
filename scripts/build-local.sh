@@ -17,6 +17,9 @@ case "$stage" in all|sync|build) ;; *) echo 'Usage: build-local.sh [all|sync|bui
 [[ $jobs =~ ^[1-9][0-9]*$ ]] || { echo 'MP01_JOBS must be positive.' >&2; exit 2; }
 mountpoint -q "$build_root" || { echo "Mount the dedicated build filesystem at $build_root first." >&2; exit 1; }
 [[ $(stat -f -c %T "$build_root") == ext2/ext3 ]] || { echo 'An ext4 build filesystem is required.' >&2; exit 1; }
+if [[ -L "$build_root/source" ]]; then
+    mountpoint -q /mnt/mp01-source || { echo 'Mount the SSD source filesystem at /mnt/mp01-source first.' >&2; exit 1; }
+fi
 for tool in repo git git-lfs curl jq ccache unzip sha256sum; do
     command -v "$tool" >/dev/null || { echo "Missing dependency: $tool" >&2; exit 1; }
 done
