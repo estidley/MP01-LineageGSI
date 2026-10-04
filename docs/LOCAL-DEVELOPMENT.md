@@ -10,6 +10,11 @@ FinQwerty, and the upstream inkOS APK. Google Play services are included at the
 user's request. `MP01_VARIANT=vanilla` selects a Google-free build instead.
 Establish hardware compatibility before replacing more system components.
 
+On a fresh setup, the MP01 service selects a light system theme and disables
+window, transition, and animator animations. It applies these defaults once,
+preserves choices on already configured devices, and permits later customization.
+These defaults still require build and on-device validation.
+
 ## Workstation
 
 Windows checkout: `C:\Users\Estid\OneDrive\Documents\ChatGPT\Android\MP01-LineageGSI`
