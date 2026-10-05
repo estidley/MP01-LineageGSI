@@ -57,6 +57,8 @@ The workstation also has an additional 24 GiB swap file at
 The local script stops at patch conflicts, records a revision-pinned Android
 manifest after sync, verifies the pinned FinQwerty and F-Droid APKs, and writes an image
 checksum. It does not publish releases, push commits, or operate on the phone.
+On a build restart, it also recognizes exact patch diffs committed after the
+pinned source revision when later patches have changed their original context.
 The upstream `build.sh` is a maintainer publishing workflow; use the local script.
 
 Progress: `/mnt/mp01-build/status.txt`; full logs: `/mnt/mp01-build/logs/`.

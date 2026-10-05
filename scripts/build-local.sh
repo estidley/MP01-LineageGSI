@@ -90,6 +90,12 @@ for group in host trebledroid personal minimal; do
                 echo "Already applied: ${patch_file##*/}"
                 continue
             fi
+            # Later patches can change the context needed for a reverse check.
+            # Match the exact stable diff against commits after the source pin.
+            if python3 "$support_dir/scripts/patch-in-history.py" "$PWD" "$PWD/$tree" "$build_root/images/source-manifest.xml" "$patch_file"; then
+                echo "Already committed: ${patch_file##*/}"
+                continue
+            fi
             git -C "$tree" apply --check "$patch_file"
             git -C "$tree" -c user.name=estidley -c user.email=36413107+estidley@users.noreply.github.com am "$patch_file"
         done
