@@ -113,11 +113,15 @@ curl --fail --location --retry 3 --output vendor/F-Droid/F-Droid.apk https://f-d
 printf '%s  %s\n' 83d3fe522281c3cb89fce3bc05038f81b3c3b32c108536941f184c5f9bb53778 vendor/F-Droid/F-Droid.apk | sha256sum --check
 unzip -t vendor/F-Droid/F-Droid.apk >/dev/null
 git -C "$support_dir" rev-parse HEAD > "$build_root/images/support-commit.txt"
-state 'COMPILING DEVELOPMENT SYSTEM IMAGE'
+state 'CONFIGURING MP01 PRODUCT'
 # Android environment scripts do not support nounset.
 set +u
 source build/envsetup.sh
-lunch "$product-bp1a-userdebug"
+if ! lunch "$product-bp1a-userdebug"; then
+    state 'FAILED configuring MP01 product'
+    exit 1
+fi
+state 'COMPILING DEVELOPMENT SYSTEM IMAGE'
 make systemimage -j"$jobs"
 set -u
 image="$OUT_DIR/target/product/tdgsi_arm64_ab/system.img"

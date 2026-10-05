@@ -3,3 +3,4 @@
 *.mk text eol=lf
 *.xml text eol=lf
 *.md text eol=lf
+*.py text eol=lf
