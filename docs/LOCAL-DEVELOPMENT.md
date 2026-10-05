@@ -47,6 +47,13 @@ Run `bash scripts/build-local.sh sync` to download source, then
 to run both. `MP01_JOBS` defaults to 8 for the current WSL memory limit.
 Compilation and downloads may take hours.
 
+The local host patch passes Go runtime settings through Soong's empty
+environment. Defaults are `GOGC=50`, `GOMEMLIMIT=20GiB` (a soft runtime memory
+limit), and `GOMAXPROCS=8`. This reduces build-graph memory pressure in the
+current 31 GiB WSL environment. It does not change the phone's runtime.
+The workstation also has an additional 24 GiB swap file at
+`/mnt/mp01-build/swap/soong.swap`; it must be re-enabled after a WSL restart.
+
 The local script stops at patch conflicts, records a revision-pinned Android
 manifest after sync, verifies the pinned FinQwerty and F-Droid APKs, and writes an image
 checksum. It does not publish releases, push commits, or operate on the phone.

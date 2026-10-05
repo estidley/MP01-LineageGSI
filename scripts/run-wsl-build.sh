@@ -7,4 +7,5 @@ mountpoint -q /mnt/mp01-source || mount --bind /sourcevol /mnt/mp01-source
 mountpoint -q /mnt/mp01-build || mount --bind /mnt/wsl/mp01-output /mnt/mp01-build
 [[ -e /mnt/mp01-build/source ]] || ln -s /mnt/mp01-source/source /mnt/mp01-build/source
 chown estid:estid /sourcevol/source /mnt/mp01-build
+bash "$(dirname -- "${BASH_SOURCE[0]}")/enable-wsl-build-swap.sh"
 exec runuser -u estid -- bash /home/estid/mp01/MP01-LineageGSI/scripts/build-local.sh "${1:-all}"

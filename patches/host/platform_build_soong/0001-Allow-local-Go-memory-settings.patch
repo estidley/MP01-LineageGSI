@@ -1,0 +1,26 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: estidley <36413107+estidley@users.noreply.github.com>
+Date: Sun, 4 Oct 2026 21:30:00 -0500
+Subject: [PATCH] Allow local Go memory settings in the Soong builder
+
+The primary builder runs with an empty environment. Pass through the Go
+runtime settings explicitly so a local build can reduce its peak memory.
+These settings affect the build host, not the Android image.
+
+diff --git a/ui/build/soong.go b/ui/build/soong.go
+--- a/ui/build/soong.go
++++ b/ui/build/soong.go
+@@ -214,6 +214,11 @@ func (pb PrimaryBuilderFactory) primaryBuilderInvocation(config Config) bootstrap
+ 
+ 	commonArgs = append(commonArgs, "-l", filepath.Join(pb.config.FileListDir(), "Android.bp.list"))
+ 	invocationEnv := make(map[string]string)
++	for _, variable := range []string{"GOGC", "GOMEMLIMIT", "GOMAXPROCS"} {
++		if value := os.Getenv(variable); value != "" {
++			invocationEnv[variable] = value
++		}
++	}
+ 	if pb.debugPort != "" {
+ 		//debug mode
+ 		commonArgs = append(commonArgs, "--delve_listen", pb.debugPort,
+-- 
+2.43.0

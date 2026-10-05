@@ -12,6 +12,11 @@ case "$variant" in
     *) echo 'MP01_VARIANT must be gapps or vanilla.' >&2; exit 2 ;;
 esac
 export MP01_VARIANT="$variant"
+export GOGC=${GOGC:-50}
+export GOMEMLIMIT=${GOMEMLIMIT:-20GiB}
+export GOMAXPROCS=${GOMAXPROCS:-$jobs}
+[[ $GOGC =~ ^[1-9][0-9]*$ && $GOMAXPROCS =~ ^[1-9][0-9]*$ ]] || { echo 'Go GC and concurrency settings must be positive integers.' >&2; exit 2; }
+[[ $GOMEMLIMIT =~ ^[1-9][0-9]*(KiB|MiB|GiB|TiB|KB|MB|GB|TB|B)$ ]] || { echo 'GOMEMLIMIT must be a positive size, such as 20GiB.' >&2; exit 2; }
 stage=${1:-all}
 case "$stage" in all|sync|build) ;; *) echo 'Usage: build-local.sh [all|sync|build]' >&2; exit 2 ;; esac
 [[ $jobs =~ ^[1-9][0-9]*$ ]] || { echo 'MP01_JOBS must be positive.' >&2; exit 2; }
@@ -67,7 +72,7 @@ PY
 fi
 [[ -f build/envsetup.sh ]] || { echo 'Source download is incomplete.' >&2; exit 1; }
 state 'APPLYING MP01 PATCHES'
-for group in trebledroid personal minimal; do
+for group in host trebledroid personal minimal; do
     for patch_dir in "$support_dir/patches/$group"/*; do
         [[ -d $patch_dir ]] || continue
         tree=${patch_dir##*/}
