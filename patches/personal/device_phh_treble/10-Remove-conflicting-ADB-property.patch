@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: estidley <36413107+estidley@users.noreply.github.com>
+Date: Mon, 5 Oct 2026 10:00:00 -0500
+Subject: [PATCH] Remove the conflicting insecure ADB system property
+
+base.mk already sets ro.adb.secure=1. Remove the older system.prop
+assignment so Android's property validation accepts the secure setting.
+
+diff --git a/system.prop b/system.prop
+--- a/system.prop
++++ b/system.prop
+@@ -1,4 +1,3 @@
+-ro.adb.secure=0
+ #Some devices have sdcardfs kernel panicing on 8.0
+ #Disable for everyone for the moment
+ ro.sys.sdcardfs=0
+-- 
+2.43.0
